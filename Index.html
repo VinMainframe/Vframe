@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Creation Game</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        #characterForm,
+        #inventory {
+            margin-top: 20px;
+        }
+
+        #result {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+
+        #inventoryLink {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            text-decoration: none;
+            padding: 5px;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <a id="inventoryLink" href="inventory.html">Inventory</a>
+
+    <h1>Character Creation Game</h1>
+
+    <form id="characterForm">
+        <label for="characterName">Character Name:</label>
+        <input type="text" id="characterName" required>
+        <br>
+        <label for="characterHP">Character HP:</label>
+        <input type="number" id="characterHP" required>
+        <br>
+        <label for="characterAttack">Character Attack Power:</label>
+        <input type="number" id="characterAttack" required>
+        <br>
+        <button type="button" onclick="createCharacter()">Create Character</button>
+    </form>
+
+    <div id="result"></div>
+
+    <button onclick="attackNPC()">Attack NPC</button>
+
+    <script>
+        let character = {};
+        let equippedItems = {
+            shield: false,
+            sword: false
+        };
+
+        let npc = {};
+
+        function generateRandomNPC() {
+            const monsterNames = ['Goblin', 'Orc', 'Troll', 'Dragon', 'Skeleton'];
+            const randomMonsterName = monsterNames[Math.floor(Math.random() * monsterNames.length)];
+            const randomMonsterHP = Math.floor(Math.random() * 50) + 1;
+            const randomMonsterAttack = Math.floor(Math.random() * 10) + 1;
+
+            return {
+                name: randomMonsterName,
+                hp: randomMonsterHP,
+                attack: randomMonsterAttack
+            };
+        }
+
+        function createCharacter() {
+            const characterName = document.getElementById('characterName').value;
+            const characterHP = parseInt(document.getElementById('characterHP').value);
+            const characterAttack = parseInt(document.getElementById('characterAttack').value);
+
+            character = {
+                name: characterName,
+                hp: characterHP,
+                attack: characterAttack
+            };
+
+            displayCharacter();
+            generateAndDisplayNPC();
+        }
+
+        function displayCharacter() {
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `
+                <p><strong>Character:</strong></p>
+                <p>Name: ${character.name}</p>
+                <p>HP: ${character.hp}</p>
+                <p>Attack Power: ${character.attack}</p>
+            `;
+        }
+
+        function generateAndDisplayNPC() {
+            npc = generateRandomNPC();
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML += `
+                <p><strong>Random NPC:</strong></p>
+                <p>Name: ${npc.name}</p>
+                <p>HP: ${npc.hp}</p>
+                <p>Attack Power: ${npc.attack}</p>
+            `;
+        }
+
+        function toggleEquip(item) {
+            equippedItems[item] = !equippedItems[item];
+
+            const shieldStatus = document.getElementById('shieldStatus');
+            const swordStatus = document.getElementById('swordStatus');
+
+            if (item === 'shield') {
+                shieldStatus.innerText = equippedItems.shield ? 'Equipped' : 'Unequipped';
+            } else if (item === 'sword') {
+                swordStatus.innerText = equippedItems.sword ? 'Equipped' : 'Unequipped';
+            }
+
+            updateCharacterStats();
+        }
+
+        function updateCharacterStats() {
+            const resultElement = document.getElementById('result');
+
+            let updatedHP = character.hp;
+            let updatedAttack = character.attack;
+
+            if (equippedItems.shield) {
+                updatedHP += 10; // Shield adds 10 HP
+            }
+
+            if (equippedItems.sword) {
+                updatedAttack += 5; // Sword adds 5 Attack Power
+            }
+
+            resultElement.innerHTML = `
+                <p><strong>Character:</strong></p>
+                <p>Name: ${character.name}</p>
+                <p>HP: ${updatedHP}</p>
+                <p>Attack Power: ${updatedAttack}</p>
+            `;
+
+            generateAndDisplayNPC();
+        }
+
+        function attackNPC() {
+            const resultElement = document.getElementById('result');
+
+            if (npc.hp <= 0) {
+                resultElement.innerHTML += `<p>The NPC has already been defeated!</p>`;
+                return;
+            }
+
+            const damageDealt = character.attack;
+            const damageTaken = npc.attack;
+
+            npc.hp -= damageDealt;
+
+            if (npc.hp <= 0) {
+                resultElement.innerHTML += `<p>You defeated the ${npc.name}! ${npc.name} has been vanquished!</p>`;
+            } else {
+                character.hp -= damageTaken;
+
+                if (character.hp <= 0) {
+                    resultElement.innerHTML += `<p>You were defeated by the ${npc.name}! Game over.</p>`;
+                } else {
+                    resultElement.innerHTML += `<p>You attacked the ${npc.name} for ${damageDealt} damage. ${npc.name} attacked back for ${damageTaken} damage.</p>`;
+                    resultElement.innerHTML += `<p>Remaining HP - ${character.name}: ${character.hp}</p>`;
+                    resultElement.innerHTML += `<p>Remaining HP - ${npc.name}: ${npc.hp}</p>`;
+                }
+            }
+        }
+
+        window.onload = function() {
+            generateAndDisplayNPC();
+        };
+    </script>
+
+</body>
+</html>

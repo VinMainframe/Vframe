@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        #inventory {
+            margin-top: 20px;
+        }
+
+        #result {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+
+        #backLink {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            text-decoration: none;
+            padding: 5px;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <a id="backLink" href="index.html">Back to Main Page</a>
+
+    <h1>Inventory</h1>
+
+    <div id="inventory">
+        <h2>Equipped Items:</h2>
+        <p>Shield: <span id="shieldStatus">Unequipped</span> <button onclick="toggleEquip('shield')">Equip/Unequip</button></p>
+        <p>Sword: <span id="swordStatus">Unequipped</span> <button onclick="toggleEquip('sword')">Equip/Unequip</button></p>
+        <!-- Add more items here -->
+
+        <h2>Inventory Items:</h2>
+        <p>Long Sword: <button onclick="equipItem('longSword', 10)">Equip</button></p>
+        <p>Light Armor: <button onclick="equipItem('lightArmor', 5)">Equip</button></p>
+        <p>Heavy Armor: <button onclick="equipItem('heavyArmor', 15)">Equip</button></p>
+        <!-- Add more items here -->
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        // Function to equip items from the inventory
+        function equipItem(item, bonus) {
+            equippedItems[item] = !equippedItems[item];
+
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `<p>You equipped ${item} with an additional ${bonus} Attack Power.</p>`;
+
+            updateCharacterStats();
+        }
+
+        // The rest of your existing script for the inventory page
+        // ...
+    </script>
+
+</body>
+</html>
